@@ -23,5 +23,15 @@ jobs:
         java-version: '21'
         distribution: 'adopt'
 
-    - name: Build Eureka Naming Server Docker Image
+    - name: Build Eureka Naming Server JAR
       run: mvn spring-boot:build-image -DskipTests
+
+    - name: Build Eureka Naming Server Docker Image
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/naming-server:${{ github.sha }} .
+        docker tag ${{ secrets.DOCKER_USERNAME }}/naming-server:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/naming-server:latest
+
+    - name: Push Eureka Naming Server Docker Image
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/naming-server:${{ github.sha }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/naming-server:latest        
